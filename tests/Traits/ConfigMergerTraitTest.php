@@ -9,22 +9,23 @@ use Nwidart\Modules\Tests\BaseTestCase;
 class ConfigMergerTraitTest extends BaseTestCase
 {
     protected $configMerger;
+
     protected $tempConfigPath;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->configMerger = new UseConfigMergerTrait();
+        $this->configMerger = new UseConfigMergerTrait;
         $this->configMerger->app = $this->app;
-        $this->tempConfigPath = sys_get_temp_dir() . '/test_config_' . uniqid() . '.php';
+        $this->tempConfigPath = sys_get_temp_dir().'/test_config_'.uniqid().'.php';
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
         Mockery::close();
-        
+
         // Clean up temporary config file if it exists
         if (file_exists($this->tempConfigPath)) {
             unlink($this->tempConfigPath);
@@ -44,8 +45,9 @@ class ConfigMergerTraitTest extends BaseTestCase
      */
     private function createTempConfigFile(array $config): string
     {
-        $configContent = "<?php\n\nreturn " . var_export($config, true) . ";\n";
+        $configContent = "<?php\n\nreturn ".var_export($config, true).";\n";
         file_put_contents($this->tempConfigPath, $configContent);
+
         return $this->tempConfigPath;
     }
 
@@ -165,7 +167,7 @@ class ConfigMergerTraitTest extends BaseTestCase
 
         // MySQL connection: existing values should override module ones
         $this->assertEquals('production.example.com', $result['connections']['mysql']['host']); // existing wins
-        $this->assertEquals(3306, $result['connections']['mysql']['port']); // existing wins  
+        $this->assertEquals(3306, $result['connections']['mysql']['port']); // existing wins
         $this->assertEquals('root', $result['connections']['mysql']['username']); // existing wins
         $this->assertEquals('production_secret', $result['connections']['mysql']['password']); // existing wins
         $this->assertEquals(30, $result['connections']['mysql']['timeout']); // existing only
@@ -216,7 +218,7 @@ class ConfigMergerTraitTest extends BaseTestCase
         // Default connection: module should win
         $this->assertEquals('sqlite', $result['default']); // module wins
 
-        // MySQL connection: module values should override existing ones  
+        // MySQL connection: module values should override existing ones
         $this->assertEquals('module.db.host', $result['connections']['mysql']['host']); // module wins
         $this->assertEquals(3307, $result['connections']['mysql']['port']); // module wins
         $this->assertEquals('module_user', $result['connections']['mysql']['username']); // module wins
@@ -363,7 +365,7 @@ class ConfigMergerTraitTest extends BaseTestCase
         $mockApp->shouldReceive('configurationIsCached')->once()->andReturn(true);
         $mockApp->shouldNotReceive('make'); // Should not try to get config service
 
-        $configMerger = new UseConfigMergerTrait();
+        $configMerger = new UseConfigMergerTrait;
         $configMerger->app = $mockApp;
 
         // Set existing config
@@ -385,7 +387,7 @@ class ConfigMergerTraitTest extends BaseTestCase
         $mockApp->shouldReceive('configurationIsCached')->once()->andReturn(false);
         $mockApp->shouldReceive('make')->with('config')->once()->andReturn($this->app['config']);
 
-        $configMerger = new UseConfigMergerTrait();
+        $configMerger = new UseConfigMergerTrait;
         $configMerger->app = $mockApp;
 
         // Set existing config
@@ -407,7 +409,7 @@ class ConfigMergerTraitTest extends BaseTestCase
         $mockApp = Mockery::mock();
         $mockApp->shouldReceive('make')->with('config')->once()->andReturn($this->app['config']);
 
-        $configMerger = new UseConfigMergerTrait();
+        $configMerger = new UseConfigMergerTrait;
         $configMerger->app = $mockApp;
 
         // Set existing config
