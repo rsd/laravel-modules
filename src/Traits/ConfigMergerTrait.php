@@ -11,11 +11,11 @@ trait ConfigMergerTrait
      *
      * @param  string  $path
      * @param  string  $key
-     * @param  bool  $top_level_precedence  Whether to use top level precedence or not
+     * @param  bool  $existingPrecedence  Whether existing config takes precedence over module config
      * @param  bool  $deep  Whether to use deep merging (array_replace_recursive) or shallow merging (array_merge)
      * @return void
      */
-    protected function mergeConfigDefaultsFrom($path, $key, $top_level_precedence = true, $deep = true)
+    protected function mergeConfigDefaultsFrom($path, $key, $existingPrecedence = true, $deep = true)
     {
         if (! ($this->app instanceof CachesConfiguration && $this->app->configurationIsCached())) {
             $config = $this->app->make('config');
@@ -23,13 +23,13 @@ trait ConfigMergerTrait
             $new = require $path;
 
             if ($deep) {
-                if ($top_level_precedence) {
+                if ($existingPrecedence) {
                     $config->set($key, array_replace_recursive($new, $existing));
                 } else {
                     $config->set($key, array_replace_recursive($existing, $new));
                 }
             } else {
-                if ($top_level_precedence) {
+                if ($existingPrecedence) {
                     $config->set($key, array_merge($new, $existing));
                 } else {
                     $config->set($key, array_merge($existing, $new));
