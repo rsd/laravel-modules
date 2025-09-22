@@ -15,7 +15,7 @@ trait ConfigMergerTrait
      * @param  bool  $deep  Whether to use deep merging (array_replace_recursive) or shallow merging (array_merge)
      * @return void
      */
-    protected function mergeConfigDefaultsFrom($path, $key, $existingPrecedence = true, $deep = true)
+    protected function mergeConfigDefaultsFrom($path, $key, $existingPrecedence = true, $deep = true): void
     {
         if (! ($this->app instanceof CachesConfiguration && $this->app->configurationIsCached())) {
             $config = $this->app->make('config');
