@@ -4,6 +4,7 @@ namespace $NAMESPACE$;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Nwidart\Modules\Traits\ConfigMergerTrait;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -11,6 +12,7 @@ use RecursiveIteratorIterator;
 class $CLASS$ extends ServiceProvider
 {
     use PathNamespace;
+    use ConfigMergerTrait;
 
     protected string $name = '$MODULE$';
 
@@ -100,7 +102,11 @@ class $CLASS$ extends ServiceProvider
                     $key = ($config === 'config.php') ? $this->nameLower : implode('.', $normalized);
 
                     $this->publishes([$file->getPathname() => config_path($config)], 'config');
+
+                    // use the following if the module's config should replace the top-level config.
                     $this->merge_config_from($file->getPathname(), $key);
+                    // or this if the module's config is a default value that can be replaced by the top-level config
+                    //$this->mergeConfigDefaultsFrom($file->getPathname(), $key);
                 }
             }
         }
